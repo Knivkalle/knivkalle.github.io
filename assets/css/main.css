@@ -330,11 +330,11 @@ a:hover {
 		}
 
 	strong, b {
-		color: #828282;
+		color: #e4dcd0;
 	}
 
 	h1, h2, h3, h4, h5, h6 {
-		color: #828282;
+		color: #e4dcd0;
 	}
 
 	blockquote {
@@ -4164,7 +4164,7 @@ body {
 }
 
 a {
-    color: #ffa500 !important;
+    color: #e4dcd0 !important;
     text-decoration: none;
 }
 
