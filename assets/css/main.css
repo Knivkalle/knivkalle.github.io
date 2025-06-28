@@ -4271,5 +4271,9 @@ a:hover {
   font-size: 3rem; /* valfritt: justera storlek */
   text-align: right; /* valfritt: centrera */
 }
+.hero-title a {
+  color: orange;
+  text-decoration: none; /* Tar bort eventuell understrykning */
+}
 
 
