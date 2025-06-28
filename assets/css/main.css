@@ -4177,10 +4177,10 @@ a:hover {
 }
 #topbar {
   display: flex;
-  height: 80px;
+  height: 80px; /* Justera höjden som du vill */
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  padding: 0 2rem;
   background-color: #1e1e1e;
   color: #fff;
   position: fixed;
@@ -4189,14 +4189,6 @@ a:hover {
   right: 0;
   z-index: 1000;
 }
-#topbar a {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  text-decoration: none;
-  color: inherit;
-}
-
 
 #topbar .logo {
   font-weight: bold;
@@ -4204,12 +4196,34 @@ a:hover {
   color: orange;
 }
 
-#nav ul {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
+#nav {
+  height: 100%;
 }
 
+#nav ul {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#nav li {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+#nav li a {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  text-decoration: none;
+  color: orange;
+  padding: 0 0.5rem;
+}
 
 #menu-toggle {
   display: none;
@@ -4237,31 +4251,22 @@ a:hover {
 
   #nav ul {
     flex-direction: column;
+    align-items: flex-start;
     gap: 1rem;
   }
 
   #menu-toggle {
     display: block;
   }
-}
-#nav li {
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-#nav ul {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
 
-#nav li {
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
+  #nav li {
+    height: auto;
+  }
 
+  #nav li a {
+    height: auto;
+    padding: 0.5rem 0;
+  }
+}
 
 
