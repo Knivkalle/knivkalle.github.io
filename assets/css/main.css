@@ -4223,6 +4223,7 @@ a:hover {
   text-decoration: none;
   color: orange;
   padding: 0 0.5rem;
+  border: none; /* 👈 Lägg till denna rad */
 }
 
 #menu-toggle {
