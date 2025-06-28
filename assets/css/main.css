@@ -4272,8 +4272,9 @@ a:hover {
   text-align: right; /* valfritt: centrera */
 }
 .hero-title a {
-  color: orange;
-  text-decoration: none; /* Tar bort eventuell understrykning */
+  color: orange !important;
+  text-decoration: none;
 }
+
 
 
