@@ -4269,7 +4269,7 @@ a:hover {
 .hero-title {
   color: orange; /* ändra till vilken färg du vill */
   font-size: 3rem; /* valfritt: justera storlek */
-  text-align: center; /* valfritt: centrera */
+  text-align: right; /* valfritt: centrera */
 }
 
 
