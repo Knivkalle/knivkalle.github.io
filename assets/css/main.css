@@ -4267,7 +4267,7 @@ a:hover {
   }
 }
 .hero-title {
-  color: orange; /* ändra till vilken färg du vill */
+  color: #ffa500; /* ändra till vilken färg du vill */
   font-size: 3rem; /* valfritt: justera storlek */
   text-align: right; /* valfritt: centrera */
 }
