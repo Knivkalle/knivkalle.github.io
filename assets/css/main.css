@@ -4266,5 +4266,10 @@ a:hover {
     padding: 0.5rem 0;
   }
 }
+.hero-title {
+  color: orange; /* ändra till vilken färg du vill */
+  font-size: 3rem; /* valfritt: justera storlek */
+  text-align: center; /* valfritt: centrera */
+}
 
 
