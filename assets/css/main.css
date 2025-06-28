@@ -100,6 +100,15 @@ input, select, textarea {
 	body {
 		background: #2d2b29;
 	}
+/* Länkfärg – följer din färgprofil */
+a {
+  color: #e8dfd4;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ffffff;
+}
 
 		body.is-preload *, body.is-preload *:before, body.is-preload *:after {
 			-moz-animation: none !important;
