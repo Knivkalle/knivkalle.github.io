@@ -333,9 +333,12 @@ a:hover {
 		color: #e4dcd0;
 	}
 
-	h1, h2, h3, h4, h5, h6 {
+	h2, h3, h4, h5, h6 {
 		color: #e4dcd0;
 	}
+
+	h1 {
+	  color: orange;
 
 	blockquote {
 		border-left-color: #e6e6e6;
