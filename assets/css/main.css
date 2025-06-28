@@ -4156,3 +4156,18 @@ a:hover {
 		}
 
 	}
+body {
+    background: #0a0a23 !important;
+    color: #e8dfd4 !important;
+    font-family: Arial, sans-serif;
+}
+
+a {
+    color: #ffa500 !important;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ffffff !important;
+}
+
