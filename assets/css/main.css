@@ -2952,7 +2952,7 @@ a:hover {
 
 		.wrapper.style1 {
 			background-color: #4696e5;
-			color: #d1e5f9;
+			color: #e4dcd0;
 		}
 
 			.wrapper.style1 input[type="submit"],
@@ -3020,7 +3020,7 @@ a:hover {
 
 			.wrapper.style1 input[type="checkbox"] + label,
 			.wrapper.style1 input[type="radio"] + label {
-				color: #d1e5f9;
+				color: #e4dcd0;
 			}
 
 				.wrapper.style1 input[type="checkbox"] + label:before,
@@ -3115,7 +3115,7 @@ a:hover {
 			}
 
 			.wrapper.style1 input, .wrapper.style1 select, .wrapper.style1 textarea {
-				color: #d1e5f9;
+				color: #e4dcd0;
 			}
 
 			.wrapper.style1 a {
@@ -3621,7 +3621,7 @@ a:hover {
 
 	#header {
 		background-color: #4696e5;
-		color: #d1e5f9;
+		color: #e4dcd0;
 		padding: 4.5em 0 2.5em 0 ;
 		-moz-align-items: center;
 		-webkit-align-items: center;
@@ -3708,7 +3708,7 @@ a:hover {
 
 		#header input[type="checkbox"] + label,
 		#header input[type="radio"] + label {
-			color: #d1e5f9;
+			color: #e4dcd0;
 		}
 
 			#header input[type="checkbox"] + label:before,
@@ -3803,7 +3803,7 @@ a:hover {
 		}
 
 		#header input, #header select, #header textarea {
-			color: #d1e5f9;
+			color: #e4dcd0;
 		}
 
 		#header a {
