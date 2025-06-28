@@ -4210,11 +4210,6 @@ a:hover {
   gap: 1.5rem;
 }
 
-#nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-}
 
 #menu-toggle {
   display: none;
