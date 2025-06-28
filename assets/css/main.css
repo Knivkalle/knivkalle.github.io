@@ -4189,6 +4189,14 @@ a:hover {
   right: 0;
   z-index: 1000;
 }
+#topbar a {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
 
 #topbar .logo {
   font-weight: bold;
