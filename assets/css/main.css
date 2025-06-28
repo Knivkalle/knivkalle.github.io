@@ -4279,7 +4279,7 @@ a:hover {
 .boka-btn {
   background-color: #ff6600; /* Ändra till valfri färg */
   font-size: 1.1rem;          /* Justera storlek */
-  padding: 0.5rem 1.25rem;   /* Justera knappen inuti */
+  padding: 0.4rem 1.0rem;   /* Justera knappen inuti */
   border: none;
   color: white;
 }
