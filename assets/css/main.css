@@ -4270,6 +4270,12 @@ a:hover {
 .logo img {
   height: 40px; /* Justera storlek */
   width: auto;
+}
+#topbar .logo img {
+  height: 40px !important;
+  width: auto !important;
+}
+
 
 }
 .hero-title {
