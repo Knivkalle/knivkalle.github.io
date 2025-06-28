@@ -4277,17 +4277,21 @@ a:hover {
   text-decoration: none;
 }
 .boka-btn {
-  background-color: #ff6600; /* Ändra till valfri färg */
-  font-size: 1.1rem;          /* Justera storlek */
-  padding: 0.5rem 1.25rem;   /* Justera knappen inuti */
-  border: none;
+  background-color: #ff6600;
+  padding: 0.7rem 1.4rem;
   color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  font-size: 1rem;
+  text-decoration: none;
 }
 
 .boka-btn i {
-  margin-right: 0.5rem; /* Mellanrum mellan ikon och text */
-  font-size: 1.2em;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
 }
-
 
 
