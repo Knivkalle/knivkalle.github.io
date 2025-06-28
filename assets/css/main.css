@@ -4266,6 +4266,11 @@ a:hover {
     height: auto;
     padding: 0.5rem 0;
   }
+
+.logo img {
+  height: 40px; /* Justera storlek */
+  width: auto;
+
 }
 .hero-title {
   color: #ffa500; /* ändra till vilken färg du vill */
