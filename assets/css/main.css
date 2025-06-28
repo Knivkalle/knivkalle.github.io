@@ -4276,6 +4276,18 @@ a:hover {
   color: orange !important;
   text-decoration: none;
 }
+.boka-btn {
+  background-color: #ff6600; /* Ändra till valfri färg */
+  font-size: 1.1rem;          /* Justera storlek */
+  padding: 0.75rem 1.25rem;   /* Justera knappen inuti */
+  border: none;
+  color: white;
+}
+
+.boka-btn i {
+  margin-right: 0.5rem; /* Mellanrum mellan ikon och text */
+  font-size: 1.2em;
+}
 
 
 
