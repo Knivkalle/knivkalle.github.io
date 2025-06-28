@@ -4244,4 +4244,10 @@ a:hover {
     display: block;
   }
 }
+#nav li {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
 
