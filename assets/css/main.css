@@ -4221,7 +4221,7 @@ a:hover {
   align-items: center;
   height: 100%;
   text-decoration: none;
-  color: #e4dcd0;
+  color: e4dcd0;
   padding: 0 0.5rem;
   border: none; /* 👈 Lägg till denna rad */
 }
