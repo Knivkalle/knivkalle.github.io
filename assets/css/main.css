@@ -4307,7 +4307,7 @@ a:hover {
 .hero-title {
   color: #ffa500; /* ändra till vilken färg du vill */
   font-size: 3rem; /* valfritt: justera storlek */
-  text-align: center; /* valfritt: centrera */
+  text-align: center !important; /* valfritt: centrera */
 }
 .hero-title a {
   color: #ffa500 !important;
