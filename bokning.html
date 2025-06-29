@@ -96,10 +96,10 @@
     <h2>Boka Knivslipning</h2>
     <form id="bookingForm">
       <label for="date">Välj datum:</label>
-      <input type="date" id="date" required>
+      <input type="date" id="date" name="date" required>
 
       <label for="time">Välj tid:</label>
-      <select id="time">
+      <select id="time" name="time">
         <option value="08:00">08:00</option>
         <option value="10:00">10:00</option>
         <option value="12:00">12:00</option>
@@ -109,16 +109,16 @@
       </select>
 
       <label for="knives">Antal knivar:</label>
-      <input type="number" id="knives" value="1" min="1" required>
+      <input type="number" id="knives" name="knives" value="1" min="1" required>
 
       <label for="name">Namn:</label>
-      <input type="text" id="name" required>
+      <input type="text" id="name" name="name" required>
 
       <label for="phone">Telefonnummer:</label>
-      <input type="tel" id="phone" required>
+      <input type="tel" id="phone" name="phone" required>
 
       <label for="address">Adress:</label>
-      <input type="text" id="address" required>
+      <input type="text" id="address" name="address" required>
 
       <div class="price" id="priceDisplay">Pris: -</div>
 
@@ -127,27 +127,25 @@
   </main>
 
   <script>
-    const bookings = [
-      { date: '2025-06-30', time: '10:00' },
-      { date: '2025-07-01', time: '16:00' }
-    ];
-
     const form = document.getElementById('bookingForm');
     const dateInput = document.getElementById('date');
     const timeInput = document.getElementById('time');
     const knivesInput = document.getElementById('knives');
     const priceDisplay = document.getElementById('priceDisplay');
 
+    const bookings = [
+      { date: '2025-06-30', time: '10:00' },
+      { date: '2025-07-01', time: '16:00' }
+    ];
+
     function calculatePrice(date, time, knives) {
       let basePricePerKnife = 100;
       let discount = 0;
 
-      // Rabatt på tider efter kl 16
       if (parseInt(time.split(":")[0]) >= 16) {
-        discount += 5; // per kniv
+        discount += 5;
       }
 
-      // Rabatt om nära annan bokning samma dag (inom 2h)
       const nearbyBooking = bookings.find(b => {
         if (b.date !== date) return false;
         const bHour = parseInt(b.time.split(":")[0]);
@@ -156,11 +154,10 @@
       });
 
       if (nearbyBooking) {
-        discount += 10; // per kniv
+        discount += 10;
       }
 
-      const finalPrice = knives * (basePricePerKnife - discount);
-      return finalPrice;
+      return knives * (basePricePerKnife - discount);
     }
 
     function updatePrice() {
@@ -176,11 +173,37 @@
     timeInput.addEventListener('change', updatePrice);
     knivesInput.addEventListener('input', updatePrice);
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      alert("Bokning skickad! Du får en bekräftelse via SMS eller mail.");
-      form.reset();
-      priceDisplay.textContent = "Pris: -";
+
+      const formData = {
+        date: dateInput.value,
+        time: timeInput.value,
+        knives: knivesInput.value,
+        name: document.getElementById('name').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value
+      };
+
+      try {
+        const response = await fetch("https://formspree.io/f/FORM_ID_HÄR", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+          alert("Bokning skickad! Du får en bekräftelse via e-post.");
+          form.reset();
+          priceDisplay.textContent = "Pris: -";
+        } else {
+          alert("Något gick fel. Försök igen.");
+        }
+      } catch (error) {
+        alert("Kunde inte skicka bokningen. Kontrollera din internetanslutning.");
+      }
     });
   </script>
 </body>
