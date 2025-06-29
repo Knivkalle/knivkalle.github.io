@@ -4305,12 +4305,12 @@ a:hover {
 
 }
 .hero-title {
-  color: #ffa500; /* ändra till vilken färg du vill */
+  color: #e4dccf; /* ändra till vilken färg du vill */
   font-size: 3rem; /* valfritt: justera storlek */
   text-align: center; /* valfritt: centrera */
 }
 .hero-title a {
-  color: orange !important;
+  color: #e4dccf !important;
   text-decoration: none;
 }
 .boka-btn {
