@@ -4312,6 +4312,7 @@ a:hover {
 .hero-title a {
   color: #e4dccf !important;
   text-decoration: none;
+  text-align: center;
 }
 .boka-btn {
   background-color: #4696e5;
