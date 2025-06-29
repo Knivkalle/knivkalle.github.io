@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>Boka Knivslipning</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #111;
+      color: #fff;
+    }
+
+    header {
+      background-color: #000;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #fff;
+      font-size: 1.5rem;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav a.button {
+      background-color: #339DFF;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 3rem auto;
+      background-color: #1c1c1c;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    h2 {
+      color: #FFA500;
+      text-align: center;
+    }
+
+    label, select, input {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    input[type="submit"], button {
+      margin-top: 1.5rem;
+      padding: 0.75rem;
+      background-color: #339DFF;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .price {
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Knivkalle</h1>
+    <nav>
+      <a href="#book" class="button">Boka slipning</a>
+      <a href="#prices">Priser</a>
+      <a href="#contact">Kontakt</a>
+      <a href="#about">Om oss</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Boka Knivslipning</h2>
+    <form id="bookingForm">
+      <label for="date">Välj datum:</label>
+      <input type="date" id="date" required>
+
+      <label for="time">Välj tid:</label>
+      <select id="time">
+        <option value="08:00">08:00</option>
+        <option value="10:00">10:00</option>
+        <option value="12:00">12:00</option>
+        <option value="14:00">14:00</option>
+        <option value="16:00">16:00</option>
+        <option value="18:00">18:00</option>
+      </select>
+
+      <label for="knives">Antal knivar:</label>
+      <input type="number" id="knives" value="1" min="1" required>
+
+      <label for="name">Namn:</label>
+      <input type="text" id="name" required>
+
+      <label for="phone">Telefonnummer:</label>
+      <input type="tel" id="phone" required>
+
+      <label for="address">Adress:</label>
+      <input type="text" id="address" required>
+
+      <div class="price" id="priceDisplay">Pris: -</div>
+
+      <input type="submit" value="Boka">
+    </form>
+  </main>
+
+  <script>
+    const bookings = [
+      { date: '2025-06-30', time: '10:00' },
+      { date: '2025-07-01', time: '16:00' }
+    ];
+
+    const form = document.getElementById('bookingForm');
+    const dateInput = document.getElementById('date');
+    const timeInput = document.getElementById('time');
+    const knivesInput = document.getElementById('knives');
+    const priceDisplay = document.getElementById('priceDisplay');
+
+    function calculatePrice(date, time, knives) {
+      let basePricePerKnife = 100;
+      let discount = 0;
+
+      // Rabatt på tider efter kl 16
+      if (parseInt(time.split(":")[0]) >= 16) {
+        discount += 5; // per kniv
+      }
+
+      // Rabatt om nära annan bokning samma dag (inom 2h)
+      const nearbyBooking = bookings.find(b => {
+        if (b.date !== date) return false;
+        const bHour = parseInt(b.time.split(":")[0]);
+        const tHour = parseInt(time.split(":")[0]);
+        return Math.abs(bHour - tHour) <= 2;
+      });
+
+      if (nearbyBooking) {
+        discount += 10; // per kniv
+      }
+
+      const finalPrice = knives * (basePricePerKnife - discount);
+      return finalPrice;
+    }
+
+    function updatePrice() {
+      const date = dateInput.value;
+      const time = timeInput.value;
+      const knives = parseInt(knivesInput.value);
+      if (!date || !time || !knives) return;
+      const price = calculatePrice(date, time, knives);
+      priceDisplay.textContent = `Pris: ${price} kr`;
+    }
+
+    dateInput.addEventListener('change', updatePrice);
+    timeInput.addEventListener('change', updatePrice);
+    knivesInput.addEventListener('input', updatePrice);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert("Bokning skickad! Du får en bekräftelse via SMS eller mail.");
+      form.reset();
+      priceDisplay.textContent = "Pris: -";
+    });
+  </script>
+</body>
+</html>
