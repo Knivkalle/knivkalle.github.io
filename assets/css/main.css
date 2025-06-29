@@ -4305,12 +4305,12 @@ a:hover {
 
 }
 .hero-title {
-  color: #e4dccf; /* ändra till vilken färg du vill */
+  color: #ffa500; /* ändra till vilken färg du vill */
   font-size: 3rem; /* valfritt: justera storlek */
   text-align: center; /* valfritt: centrera */
 }
 .hero-title a {
-  color: #e4dccf !important;
+  color: #ffa500 !important;
   text-decoration: none;
   text-align: center;
 }
