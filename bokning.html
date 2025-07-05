@@ -159,84 +159,67 @@
   </main>
 
   <script>
-    const form = document.getElementById('bookingForm');
-    const dateInput = document.getElementById('date');
-    const timeInput = document.getElementById('time');
-    const knivesInput = document.getElementById('knives');
-    const priceDisplay = document.getElementById('priceDisplay');
+  const form = document.getElementById('bookingForm');
+  const dateInput = document.getElementById('date');
+  const timeInput = document.getElementById('time');
+  const knivesInput = document.getElementById('knives');
+  const priceDisplay = document.getElementById('priceDisplay');
 
-    const bookings = [
-      { date: '2025-06-30', time: '10:00' },
-      { date: '2025-07-01', time: '16:00' }
-    ];
+  function calculatePrice(date, time, knives) {
+    let basePricePerKnife = 100;
+    let discount = 0;
 
-    function calculatePrice(date, time, knives) {
-      let basePricePerKnife = 100;
-      let discount = 0;
+    if (parseInt(time.split(":")[0]) >= 16) discount += 5;
+    return knives * (basePricePerKnife - discount);
+  }
 
-      if (parseInt(time.split(":")[0]) >= 16) {
-        discount += 5;
-      }
+  function updatePrice() {
+    const date = dateInput.value;
+    const time = timeInput.value;
+    const knives = parseInt(knivesInput.value);
+    if (!date || !time || !knives) return;
+    const price = calculatePrice(date, time, knives);
+    priceDisplay.textContent = `Pris: ${price} kr`;
+  }
 
-      const nearbyBooking = bookings.find(b => {
-        if (b.date !== date) return false;
-        const bHour = parseInt(b.time.split(":")[0]);
-        const tHour = parseInt(time.split(":")[0]);
-        return Math.abs(bHour - tHour) <= 2;
+  dateInput.addEventListener('change', updatePrice);
+  timeInput.addEventListener('change', updatePrice);
+  knivesInput.addEventListener('input', updatePrice);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = {
+      date: dateInput.value,
+      time: timeInput.value,
+      knives: knivesInput.value,
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      address: document.getElementById('address').value
+    };
+
+    try {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbyOfLHA4dLjgQViO-BAoTnmrkECurtN9iCjgt64VMbDq7cEMrK2ukDbuy5OgzZadM0lIA/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(formData)
       });
 
-      if (nearbyBooking) {
-        discount += 10;
+      if (response.ok) {
+        window.location.href = "tack.html";
+      } else {
+        const text = await response.text();
+        console.error("Svar från servern:", response.status, text);
+        alert("Något gick fel vid bokningen.");
       }
 
-      return knives * (basePricePerKnife - discount);
+    } catch (error) {
+      console.error("Fetch error:", error);
+      alert("Kunde inte skicka bokningen. Kontrollera din internetanslutning.");
     }
-
-    function updatePrice() {
-      const date = dateInput.value;
-      const time = timeInput.value;
-      const knives = parseInt(knivesInput.value);
-      if (!date || !time || !knives) return;
-      const price = calculatePrice(date, time, knives);
-      priceDisplay.textContent = `Pris: ${price} kr`;
-    }
-
-    dateInput.addEventListener('change', updatePrice);
-    timeInput.addEventListener('change', updatePrice);
-    knivesInput.addEventListener('input', updatePrice);
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const formData = {
-        date: dateInput.value,
-        time: timeInput.value,
-        knives: knivesInput.value,
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        address: document.getElementById('address').value
-      };
-
-      try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwyLGdcvY6O2jFjl3r-84sLdEfPCU8HpUCnxJNMOC9HqT36ppBTDan0YU7rTZ00rQO1mw/exec", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify(formData)
-        });
-
-        if (response.ok) {
-          window.location.href = "tack.html";
-        } else {
-          alert("Något gick fel. Försök igen.");
-        }
-      } catch (error) {
-        alert("Kunde inte skicka bokningen. Kontrollera din internetanslutning.");
-      }
-    });
-  </script>
-</body>
-</html>
+  });
+</script>
