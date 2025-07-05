@@ -123,7 +123,7 @@
 
   <main>
     <h2>Boka Knivslipning</h2>
-    <form id="bookingForm">
+    <form id="bookingForm" action="https://script.google.com/macros/s/AKfycbwDBH3Q6XVqTjS2n4-bXeZtn7TMI9WEDdMYUt9P2AaX_uKi-qhflXroZJrIJYerDRu-nw/exec" method="POST" target="hidden_iframe">
       <label for="date">Välj datum:</label>
       <input type="date" id="date" name="date" required>
 
@@ -158,71 +158,38 @@
     </form>
   </main>
 
- <form id="bookingForm" action="https://script.google.com/macros/s/AKfycbwDBH3Q6XVqTjS2n4-bXeZtn7TMI9WEDdMYUt9P2AaX_uKi-qhflXroZJrIJYerDRu-nw/exec" method="POST" target="hidden_iframe">
-  <label for="date">Välj datum:</label>
-  <input type="date" id="date" name="date" required>
+  <iframe name="hidden_iframe" style="display:none;" onload="if(submitted) window.location.href='tack.html';"></iframe>
 
-  <label for="time">Välj tid:</label>
-  <select id="time" name="time">
-    <option value="08:00">08:00</option>
-    <option value="10:00">10:00</option>
-    <option value="12:00">12:00</option>
-    <option value="14:00">14:00</option>
-    <option value="16:00">16:00</option>
-    <option value="18:00">18:00</option>
-  </select>
+  <script>
+    const dateInput = document.getElementById('date');
+    const timeInput = document.getElementById('time');
+    const knivesInput = document.getElementById('knives');
+    const priceDisplay = document.getElementById('priceDisplay');
+    let submitted = false;
 
-  <label for="knives">Antal knivar:</label>
-  <input type="number" id="knives" name="knives" value="1" min="1" required>
+    function calculatePrice(date, time, knives) {
+      let basePricePerKnife = 100;
+      let discount = 0;
+      if (parseInt(time.split(":")[0]) >= 16) discount += 5;
+      return knives * (basePricePerKnife - discount);
+    }
 
-  <label for="name">Namn:</label>
-  <input type="text" id="name" name="name" required>
+    function updatePrice() {
+      const date = dateInput.value;
+      const time = timeInput.value;
+      const knives = parseInt(knivesInput.value);
+      if (!date || !time || !knives) return;
+      const price = calculatePrice(date, time, knives);
+      priceDisplay.textContent = `Pris: ${price} kr`;
+    }
 
-  <label for="email">E-postadress:</label>
-  <input type="email" id="email" name="email" required>
+    dateInput.addEventListener('change', updatePrice);
+    timeInput.addEventListener('change', updatePrice);
+    knivesInput.addEventListener('input', updatePrice);
 
-  <label for="phone">Telefonnummer:</label>
-  <input type="tel" id="phone" name="phone" required>
-
-  <label for="address">Adress:</label>
-  <input type="text" id="address" name="address" required>
-
-  <div class="price" id="priceDisplay">Pris: -</div>
-
-  <input type="submit" value="Boka">
-</form>
-
-<iframe name="hidden_iframe" style="display:none;" onload="if(submitted) window.location.href='tack.html';"></iframe>
-
-<script>
-  const dateInput = document.getElementById('date');
-  const timeInput = document.getElementById('time');
-  const knivesInput = document.getElementById('knives');
-  const priceDisplay = document.getElementById('priceDisplay');
-  let submitted = false;
-
-  function calculatePrice(date, time, knives) {
-    let basePricePerKnife = 100;
-    let discount = 0;
-    if (parseInt(time.split(":")[0]) >= 16) discount += 5;
-    return knives * (basePricePerKnife - discount);
-  }
-
-  function updatePrice() {
-    const date = dateInput.value;
-    const time = timeInput.value;
-    const knives = parseInt(knivesInput.value);
-    if (!date || !time || !knives) return;
-    const price = calculatePrice(date, time, knives);
-    priceDisplay.textContent = `Pris: ${price} kr`;
-  }
-
-  dateInput.addEventListener('change', updatePrice);
-  timeInput.addEventListener('change', updatePrice);
-  knivesInput.addEventListener('input', updatePrice);
-
-  document.getElementById("bookingForm").addEventListener("submit", () => {
-    submitted = true;
-  });
-</script>
-
+    document.getElementById("bookingForm").addEventListener("submit", () => {
+      submitted = true;
+    });
+  </script>
+</body>
+</html>
