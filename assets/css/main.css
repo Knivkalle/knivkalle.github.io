@@ -4308,12 +4308,12 @@ a:hover {
 .hero-title {
   color: #ffa500; /* ändra till vilken färg du vill */
   font-size: 3rem; /* valfritt: justera storlek */
-  text-align: center !important; /* valfritt: centrera */
+  text-align: left !important; /* valfritt: centrera */
 }
 .hero-title a {
   color: #ffa500 !important;
   text-decoration: none;
-  text-align: center;
+  text-align: left;
 }
 .boka-btn {
   background-color: #4696e5;
