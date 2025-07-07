@@ -111,24 +111,143 @@
         text-align: center;
         font-size: 1.2rem;
       }
+
+      /* Topbar styling copied from index.html */
+      #topbar {
+        display: flex;
+        height: 80px;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2rem;
+        background-color: #1f1e1e;
+        color: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+      }
+
+      #topbar .logo {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #e4dccf;
+      }
+
+      #nav {
+        height: 100%;
+      }
+
+      #nav ul {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        color: #e4dcd0;
+      }
+
+      #nav li {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+
+      #nav li a {
+        display: flex;
+        align-items: center;
+        height: 60%;
+        text-decoration: none;
+        color: #e4dcd0;
+        padding: -20px 0.5rem;
+        border: none;
+      }
+
+      #menu-toggle {
+        display: none;
+        font-size: 1.8rem;
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        #nav {
+          display: none;
+          position: absolute;
+          top: 100%;
+          right: 0;
+          background-color: #1e1e1e;
+          padding: 1rem;
+        }
+
+        #nav.open {
+          display: block;
+        }
+
+        #nav ul {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        #menu-toggle {
+          display: block;
+        }
+
+        #nav li {
+          height: auto;
+        }
+
+        #nav li a {
+          height: auto;
+          padding: 0.5rem 0;
+        }
+      }
+
+      .boka-btn-topbar {
+        background-color: #4696e5;
+        padding: 0.55rem 1.4rem;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: ease-in-out 0.2s;
+      }
+
+      .boka-btn-topbar:hover {
+        background-color: rgba(144, 144, 144, 0.075);
+        color: #ffffff;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+      }
     </style>
   </head>
   <body>
-    <header>
-      <h1>
-        <a href="index.html" style="color: #e4dcd0; text-decoration: none"
-          >Knivkalle</a
-        >
-      </h1>
-      <nav>
+    <div id="topbar">
+      <div class="logo">Knivkalle</div>
+      <button id="menu-toggle">☰</button>
+      <nav id="nav">
         <ul>
-          <li><a class="nav-btn" href="bokning.html">Boka slipning</a></li>
-          <li><a href="index.html#prices">Priser</a></li>
-          <li><a href="index.html#contact">Kontakt</a></li>
-          <li><a href="index.html#about">Om oss</a></li>
+          <li>
+            <a href="bokning.html" class="boka-btn-topbar"
+              ><i class="fas fa-scissors"></i> Boka slipning</a
+            >
+          </li>
+          <li><a href="index.html#priser">Priser</a></li>
+          <li><a href="index.html#kontakt">Kontakt</a></li>
+          <li><a href="index.html#om-oss">Om oss</a></li>
         </ul>
       </nav>
-    </header>
+    </div>
 
     <main>
       <h2>Boka Knivslipning</h2>
@@ -214,6 +333,14 @@
 
       document.getElementById("bookingForm").addEventListener("submit", () => {
         submitted = true;
+      });
+    </script>
+    <script>
+      const toggle = document.getElementById("menu-toggle");
+      const nav = document.getElementById("nav");
+
+      toggle.addEventListener("click", () => {
+        nav.classList.toggle("open");
       });
     </script>
   </body>
