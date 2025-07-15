@@ -4531,3 +4531,6 @@ a:hover {
   padding: 0 1rem;
   text-align: center;
 }
+html {
+  scroll-behavior: smooth;
+}
