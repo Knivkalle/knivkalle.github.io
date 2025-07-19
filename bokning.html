@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Boka Knivslipning</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/main.css" />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #111;
+        color: #e4dcd0;
+      }
+
+      header {
+        background-color: #111;
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+      }
+
+      header h1 {
+        margin: 0;
+        color: #fff;
+        font-size: 2rem;
+        font-weight: 600;
+      }
+
+      main {
+        max-width: 600px;
+        margin: 3rem auto;
+        background-color: #1c1c1c;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        padding-top: 5rem;
+      }
+
+      h2 {
+        color: #ffa500;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      label,
+      select,
+      input {
+        display: block;
+        width: 100%;
+        margin-top: 1rem;
+        padding: 0.5rem;
+        border-radius: 5px;
+        border: none;
+        font-size: 1rem;
+      }
+
+      input[type="submit"],
+      button {
+        margin-top: 1.5rem;
+        padding: 0.75rem;
+        background-color: #339dff;
+        color: #e4dcd0;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center; /* Centrerar horisontellt */
+        line-height: 1.2rem; /* Gör att texten hamnar i mitten vertikalt */
+      }
+
+      .price {
+        font-weight: bold;
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 1.2rem;
+      }
+      input,
+      select,
+      textarea {
+        background-color: #ffffff;
+        color: #141414;
+        border: 1px solid #444;
+      }
+      input[type="text"],
+      input[type="email"] {
+        background-color: #ffffff;
+        color: #141414;
+        border: 1px solid #444;
+      }
+      .logo a {
+        text-decoration: none;
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body class="is-preload">
+    <div id="topbar">
+      <div class="logo">
+        <a href="index.html">Knivkalle</a>
+      </div>
+
+      <button id="menu-toggle">☰</button>
+
+      <nav id="nav">
+        <ul>
+          <li>
+            <a href="bokning.html" class="boka-btn-topbar"
+              ><i class=""></i> Boka slipning</a
+            >
+          </li>
+          <li><a href="index.html#priser">Priser</a></li>
+          <li><a href="index.html#kontakt">Kontakt</a></li>
+          <li><a href="index.html#om-oss">Om oss</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <main>
+      <h2>Boka Knivslipning</h2>
+      <form
+        id="bookingForm"
+        action="https://formspree.io/f/xdkzbnrz"
+        method="POST"
+        target="hidden_iframe"
+      >
+        <label for="date">Välj datum:</label>
+        <input
+          type="date"
+          id="date"
+          name="date"
+          onclick="this.showPicker()"
+          required
+        />
+
+        <label for="time">Välj tid:</label>
+        <select id="time" name="time">
+          <option value="08:00">08:00</option>
+          <option value="10:00">10:00</option>
+          <option value="16:00">16:00</option>
+          <option value="18:00">18:00</option>
+        </select>
+
+        <label for="knives">Antal knivar:</label>
+        <input
+          type="number"
+          id="knives"
+          name="knives"
+          value="1"
+          min="1"
+          required
+        />
+
+        <label for="name">Namn:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">E-postadress:</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="phone">Telefonnummer:</label>
+        <input type="tel" id="phone" name="phone" required />
+
+        <label for="address">Adress:</label>
+        <input type="text" id="address" name="address" required />
+
+        <div class="price" id="priceDisplay">Pris: -</div>
+
+        <input type="submit" value="Boka" />
+      </form>
+    </main>
+
+    <iframe
+      name="hidden_iframe"
+      style="display: none"
+      onload="if(submitted) window.location.href='tack.html';"
+    ></iframe>
+
+    <script>
+      const dateInput = document.getElementById("date");
+      const now = new Date();
+      const todayStr = now.toISOString().split("T")[0];
+      dateInput.min = todayStr;
+
+      const timeInput = document.getElementById("time");
+      const knivesInput = document.getElementById("knives");
+      const priceDisplay = document.getElementById("priceDisplay");
+      let submitted = false;
+
+      function calculatePrice(date, time, knives) {
+        let price = 0;
+        knives = parseInt(knives);
+
+        if (knives === 1) price = 150;
+        else if (knives === 2) price = 250;
+        else if (knives === 3) price = 350;
+        else if (knives === 4) price = 450;
+        else if (knives === 5) price = 500;
+        else if (knives > 5) price = 500 + (knives - 5) * 50;
+
+        return price;
+      }
+
+      function updatePrice() {
+        const date = dateInput.value;
+        const time = timeInput.value;
+        const knives = parseInt(knivesInput.value);
+        if (!date || !time || !knives) return;
+        const price = calculatePrice(date, time, knives);
+        priceDisplay.textContent = `Pris: ${price} kr`;
+      }
+
+      dateInput.addEventListener("change", updatePrice);
+      timeInput.addEventListener("change", updatePrice);
+      knivesInput.addEventListener("input", updatePrice);
+
+      document.getElementById("bookingForm").addEventListener("submit", () => {
+        submitted = true;
+        const selectedDate = new Date(`${dateInput.value}T${timeInput.value}`);
+        const nowTime = new Date();
+        const diffHours = (selectedDate - nowTime) / (1000 * 60 * 60);
+
+        if (selectedDate < nowTime) {
+          alert("Du kan inte boka ett datum som redan har varit.");
+          event.preventDefault();
+          return;
+        }
+
+        if (diffHours < 8) {
+          alert("Du måste boka minst 8 timmar i förväg.");
+          event.preventDefault();
+          return;
+        }
+      });
+    </script>
+  </body>
+</html>

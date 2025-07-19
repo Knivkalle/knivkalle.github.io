@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kontakt - Knivkalle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <style>
+      main {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background-color: #1c1c1c;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        padding-top: 5rem;
+      }
+
+      h2 {
+        color: #ffa500;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-top: 1rem;
+        font-weight: 600;
+        color: #e4dcd0;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      textarea {
+        width: 100%;
+        padding: 0.6rem;
+        margin-top: 0.3rem;
+        border-radius: 5px;
+        border: none;
+        font-size: 1rem;
+        background-color: #ffffff;
+        color: #181817;
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      input[type="submit"] {
+        margin-top: 2rem;
+        padding: 0.75rem;
+        background-color: #339dff;
+        color: #e4dcd0;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        text-align: center;
+        line-height: 1.2rem;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #228be6;
+      }
+    </style>
+  </head>
+  <body class="is-preload">
+    <div id="topbar">
+      <div class="logo">
+        <a href="index.html">Knivkalle</a>
+      </div>
+
+      <button id="menu-toggle">☰</button>
+      <nav id="nav">
+        <ul>
+          <li>
+            <a href="bokning.html" class="boka-btn-topbar"
+              ><i class=""></i> Boka slipning</a
+            >
+          </li>
+          <li><a href="index.html#priser">Priser</a></li>
+          <li><a href="index.htmlkontakt.html">Kontakt</a></li>
+          <li><a href="index.html#om-oss">Om oss</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <main>
+      <h2>Kontakta oss</h2>
+      <form
+        id="contactForm"
+        action="https://formspree.io/f/xdkzbnrz"
+        method="POST"
+        target="hidden_iframe"
+      >
+        <label for="name">Namn:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">E-post:</label>
+        <input type="email" id="email" name="_replyto" required />
+
+        <label for="message">Meddelande:</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+
+        <input type="submit" value="Skicka" />
+      </form>
+    </main>
+
+    <iframe
+      name="hidden_iframe"
+      style="display: none"
+      onload="if(submitted) alert('Tack för ditt meddelande! Vi hör av oss snart.');"
+    ></iframe>
+
+    <script>
+      let submitted = false;
+      document
+        .getElementById("contactForm")
+        .addEventListener("submit", function () {
+          submitted = true;
+        });
+
+      const toggle = document.getElementById("menu-toggle");
+      const nav = document.getElementById("nav");
+      toggle.addEventListener("click", () => {
+        nav.classList.toggle("open");
+      });
+    </script>
+  </body>
+</html>
