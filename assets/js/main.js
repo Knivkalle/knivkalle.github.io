@@ -63,4 +63,26 @@
 
     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
   });
+  $(function () {
+  const menuToggle = document.getElementById('menu-toggle');
+  const navLinks = document.querySelectorAll('#nav a');
+
+  if (!menuToggle) return;
+
+  // Stäng menyn vid klick på en länk
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      menuToggle.checked = false;
+    });
+  });
+
+  // Stäng menyn när man scrollar
+  window.addEventListener('scroll', () => {
+    if (menuToggle.checked) {
+      menuToggle.checked = false;
+    }
+  });
+});
+
+
 })(jQuery);
