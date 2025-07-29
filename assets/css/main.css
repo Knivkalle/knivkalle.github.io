@@ -4482,7 +4482,7 @@ a:hover {
 /* Endast på mobil och små skärmar */
 @media (max-width: 768px) {
   #header {
-    margin-top: 30%;
+    margin-top: 10%;
   }
 }
 
@@ -4496,6 +4496,7 @@ a:hover {
   /* Mer luft mellan logga och text */
   .master-logo {
     margin-bottom: 20%; /* Öka eller minska efter smak */
+    width: 100%; /* Full bredd på mobil */
   }
 
   /* Mindre knappar */
