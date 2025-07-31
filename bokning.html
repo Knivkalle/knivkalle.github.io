@@ -157,7 +157,7 @@
           id="knives"
           name="knives"
           value="1"
-          min="1"
+          min="2"
           required
         />
 
@@ -201,11 +201,11 @@
         knives = parseInt(knives);
 
         if (knives === 1) price = 150;
-        else if (knives === 2) price = 250;
-        else if (knives === 3) price = 350;
-        else if (knives === 4) price = 450;
-        else if (knives === 5) price = 500;
-        else if (knives > 5) price = 500 + (knives - 5) * 50;
+        else if (knives === 2) price = 179;
+        else if (knives === 3) price = 259;
+        else if (knives === 4) price = 339;
+        else if (knives === 5) price = 419;
+        else if (knives > 5) price = 419 + (knives - 5) * 50;
 
         return price;
       }
@@ -237,6 +237,12 @@
 
         if (diffHours < 8) {
           alert("Du måste boka minst 8 timmar i förväg.");
+          event.preventDefault();
+          return;
+        }
+
+        if (knives < 2) {
+          alert("Du måste boka minst 2 knivar.");
           event.preventDefault();
           return;
         }
