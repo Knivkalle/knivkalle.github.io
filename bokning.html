@@ -188,8 +188,17 @@
     <script>
       const dateInput = document.getElementById("date");
       const now = new Date();
-      const todayStr = now.toISOString().split("T")[0];
-      dateInput.min = todayStr;
+      // Beräkna datumet för imorgon
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      // Formatera datumet som yyyy-mm-dd
+      const tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+      // Sätt värdet och minimidatumet till imorgon
+      dateInput.value = tomorrowStr;
+      dateInput.min = tomorrowStr;
+      
 
       const timeInput = document.getElementById("time");
       const knivesInput = document.getElementById("knives");
