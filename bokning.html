@@ -56,7 +56,8 @@
 
       label,
       select,
-      input {
+      input,
+      textarea {
         display: block;
         width: 100%;
         margin-top: 1rem;
@@ -76,8 +77,13 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        text-align: center; /* Centrerar horisontellt */
-        line-height: 1.2rem; /* Gör att texten hamnar i mitten vertikalt */
+        text-align: center;
+        line-height: 1.2rem;
+      }
+
+      input[type="submit"][disabled] {
+        opacity: 0.7;
+        cursor: not-allowed;
       }
 
       .price {
@@ -86,6 +92,7 @@
         text-align: center;
         font-size: 1.2rem;
       }
+
       input,
       select,
       textarea {
@@ -93,16 +100,12 @@
         color: #141414;
         border: 1px solid #444;
       }
-      input[type="text"],
-      input[type="email"] {
-        background-color: #ffffff;
-        color: #141414;
-        border: 1px solid #444;
-      }
+
       .logo a {
         text-decoration: none;
         color: inherit;
       }
+
       .subtitle {
         text-align: center;
         margin-top: -0.5rem;
@@ -112,6 +115,7 @@
       }
     </style>
   </head>
+
   <body class="is-preload">
     <div id="topbar">
       <div class="logo">
@@ -123,9 +127,7 @@
       <nav id="nav">
         <ul>
           <li>
-            <a href="bokning.html" class="boka-btn-topbar"
-              ><i class=""></i> Boka slipning</a
-            >
+            <a href="bokning.html" class="boka-btn-topbar">Boka slipning</a>
           </li>
           <li><a href="index.html#priser">Priser</a></li>
           <li><a href="index.html#kontakt">Kontakt</a></li>
@@ -138,9 +140,15 @@
       <h2>Boka Knivslipning</h2>
       <p class="subtitle">Välj när du vill att vi hämtar dina knivar.</p>
 
+      <!--
+        IMPORTANT:
+        - Den här POST:ar direkt till n8n (Production URL).
+        - n8n ska svara 302 Location -> tack.html
+        - Ingen fetch/iframe behövs.
+      -->
       <form
         id="bookingForm"
-        action="https://formspree.io/f/xdkzbnrz"
+        action="https://automation.knivkalle.se/webhook/bokning"
         method="POST"
       >
         <label>Tillgängliga datum:</label>
@@ -149,7 +157,7 @@
           style="display: grid; grid-template-columns: 1fr; gap: 0.5rem"
         ></div>
 
-        <!-- Behåll ett datumfält som faktiskt skickas till Formspree -->
+        <!-- Skickas med (val av datum) -->
         <input type="hidden" id="date" name="date" required />
 
         <label for="time">Välj tid:</label>
@@ -162,7 +170,7 @@
           type="number"
           id="knives"
           name="knives"
-          value="1"
+          value="2"
           min="2"
           required
         />
@@ -179,25 +187,32 @@
         <label for="address">Adress:</label>
         <input type="text" id="address" name="address" required />
 
+        <label for="notes">Övrigt (valfritt):</label>
+        <textarea id="notes" name="notes" rows="3"></textarea>
+
+        <!-- Honeypot (bots fyller ofta i allt) -->
+        <input
+          type="text"
+          name="company"
+          style="display: none"
+          tabindex="-1"
+          autocomplete="off"
+        />
+
         <div class="price" id="priceDisplay">Pris: -</div>
 
-        <input type="submit" value="Boka" />
+        <input type="submit" id="submitBtn" value="Boka" />
       </form>
     </main>
 
-    <iframe
-      name="hidden_iframe"
-      style="display: none"
-      onload="if(submitted) window.location.href='tack.html';"
-    ></iframe>
-
     <script>
-      const dateHiddenInput = document.getElementById("date"); // hidden now
+      const dateHiddenInput = document.getElementById("date");
       const timeInput = document.getElementById("time");
       const knivesInput = document.getElementById("knives");
       const priceDisplay = document.getElementById("priceDisplay");
       const form = document.getElementById("bookingForm");
       const dateListEl = document.getElementById("dateList");
+      const submitBtn = document.getElementById("submitBtn");
 
       let availability = null;
       let selectedDate = null;
@@ -212,7 +227,6 @@
       }
 
       function parseYMD(ymd) {
-        // Local date, no timezone weirdness
         const [y, m, d] = ymd.split("-").map(Number);
         return new Date(y, m - 1, d);
       }
@@ -281,10 +295,6 @@
         priceDisplay.textContent = `Pris: ${calculatePrice(knives)} kr`;
       }
 
-      function hoursBetween(a, b) {
-        return (a - b) / (1000 * 60 * 60);
-      }
-
       function isAllowed(ymd, time) {
         const list = availability?.allowed?.[ymd];
         return Array.isArray(list) && list.includes(time);
@@ -301,7 +311,7 @@
         const minDateYMD = getMinDateYMD();
         const minTime = parseYMD(minDateYMD).getTime();
 
-        const allowedDates = Object.keys(availability.allowed || {})
+        const allowedDates = Object.keys(availability?.allowed || {})
           .filter((d) => {
             const t = parseYMD(d).getTime();
             return Number.isFinite(t) && t >= minTime;
@@ -327,7 +337,6 @@
           btn.type = "button";
           btn.dataset.ymd = d;
 
-          // Inline-styling, så du inte blir saboterad av din globala button-CSS
           btn.style.display = "flex";
           btn.style.justifyContent = "space-between";
           btn.style.alignItems = "center";
@@ -338,8 +347,8 @@
           btn.style.background = "#121212";
           btn.style.color = "#e4dcd0";
           btn.style.cursor = "pointer";
-          btn.style.marginTop = "0"; // neutralisera din globala button-regel
-          btn.style.lineHeight = "1.2rem"; // neutralisera globalt
+          btn.style.marginTop = "0";
+          btn.style.lineHeight = "1.2rem";
           btn.style.fontWeight = "600";
 
           const left = document.createElement("div");
@@ -356,6 +365,8 @@
           btn.addEventListener("click", () => selectDate(d));
           dateListEl.appendChild(btn);
         }
+
+        // Ingen förvald dag
         selectedDate = null;
         dateHiddenInput.value = "";
         clearTimes("Välj ett datum först");
@@ -384,7 +395,6 @@
         availability = await res.json();
       }
 
-      // Init
       (async () => {
         try {
           clearTimes("Laddar tider...");
@@ -401,77 +411,37 @@
       knivesInput.addEventListener("input", updatePrice);
       timeInput.addEventListener("change", updatePrice);
 
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault(); // stoppa normal submit
-
-        // --- dina valideringar här ---
+      // Validera, men låt browsern POST:a normalt (n8n redirectar med 302)
+      form.addEventListener("submit", (event) => {
         const ymd = dateHiddenInput.value;
         const time = timeInput.value;
         const knives = parseInt(knivesInput.value, 10);
 
         if (!ymd) {
+          event.preventDefault();
           alert("Välj ett datum.");
           return;
         }
         if (!time) {
+          event.preventDefault();
           alert("Välj en tid.");
           return;
         }
         if (Number.isNaN(knives) || knives < 2) {
+          event.preventDefault();
           alert("Minst 2 knivar.");
           return;
         }
         if (!isAllowed(ymd, time)) {
+          event.preventDefault();
           alert("Välj en tillgänglig tid.");
           return;
         }
 
-        // (min_notice_hours-check etc fortsätter som du redan har)
-
-        // Disable submit-knappen så folk inte dubbelklickar
-        const submitBtn = form.querySelector(
-          'input[type="submit"], button[type="submit"]'
-        );
+        // Stoppa dubbelklick
         if (submitBtn) {
           submitBtn.disabled = true;
           submitBtn.value = "Skickar...";
-        }
-
-        // Fallback: om Formspree segar ur helt, redirecta ändå efter 2 sek
-        const fallbackRedirect = setTimeout(() => {
-          window.location.href = "tack.html";
-        }, 2000);
-
-        try {
-          const formData = new FormData(form);
-
-          const res = await fetch(form.action, {
-            method: "POST",
-            body: formData,
-            headers: { Accept: "application/json" },
-          });
-
-          clearTimeout(fallbackRedirect);
-
-          // Formspree svarar ofta 200/302. Vi accepterar “ok-ish”.
-          if (res.ok) {
-            window.location.href = "tack.html";
-            return;
-          }
-
-          // Om det blev fel: visa fel och återaktivera
-          const text = await res.text().catch(() => "");
-          console.error("Formspree error:", res.status, text);
-          alert("Kunde inte skicka bokningen just nu. Försök igen.");
-        } catch (err) {
-          clearTimeout(fallbackRedirect);
-          console.error(err);
-          alert("Nätverksfel. Försök igen.");
-        } finally {
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.value = "Boka";
-          }
         }
       });
     </script>
