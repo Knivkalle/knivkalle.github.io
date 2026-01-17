@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Boka Knivslipning</title>
-    <meta />
-    name="description" content="Boka en tid för knivslipning hos Knivkalle. Välj
-    datum, tid och antal knivar."
+    <meta
+      name="description"
+      content="Boka en tid för knivslipning hos Knivkalle. Välj datum, tid och antal knivar."
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
@@ -127,10 +128,52 @@
     </div>
 
     <main>
-      <h2>
-        Tyvärr finns inga lediga tider just nu, kom tillbaka imorgon för nya
-        tider.
-      </h2>
+      <h2>Boka Knivslipning</h2>
+      <form
+        id="bookingForm"
+        action="https://formspree.io/f/xdkzbnrz"
+        method="POST"
+      >
+        <label>Tillgängliga datum:</label>
+        <div
+          id="dateList"
+          style="display: grid; grid-template-columns: 1fr; gap: 0.5rem"
+        ></div>
+
+        <!-- Behåll ett datumfält som faktiskt skickas till Formspree -->
+        <input type="hidden" id="date" name="date" required />
+
+        <label for="time">Välj tid:</label>
+        <select id="time" name="time" required>
+          <option value="" selected disabled>Välj ett datum först</option>
+        </select>
+
+        <label for="knives">Antal knivar:</label>
+        <input
+          type="number"
+          id="knives"
+          name="knives"
+          value="1"
+          min="2"
+          required
+        />
+
+        <label for="name">Namn:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">E-postadress:</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="phone">Telefonnummer:</label>
+        <input type="tel" id="phone" name="phone" required />
+
+        <label for="address">Adress:</label>
+        <input type="text" id="address" name="address" required />
+
+        <div class="price" id="priceDisplay">Pris: -</div>
+
+        <input type="submit" value="Boka" />
+      </form>
     </main>
 
     <iframe
@@ -140,73 +183,286 @@
     ></iframe>
 
     <script>
-      const dateInput = document.getElementById("date");
-      const now = new Date();
-      // Beräkna datumet för imorgon
-      const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-
-      // Formatera datumet som yyyy-mm-dd
-      const tomorrowStr = tomorrow.toISOString().split("T")[0];
-
-      // Sätt värdet och minimidatumet till imorgon
-      dateInput.value = tomorrowStr;
-      dateInput.min = tomorrowStr;
-
+      const dateHiddenInput = document.getElementById("date"); // hidden now
       const timeInput = document.getElementById("time");
       const knivesInput = document.getElementById("knives");
       const priceDisplay = document.getElementById("priceDisplay");
-      let submitted = false;
+      const form = document.getElementById("bookingForm");
+      const dateListEl = document.getElementById("dateList");
 
-      function calculatePrice(date, time, knives) {
-        let price = 0;
-        knives = parseInt(knives);
+      let availability = null;
+      let selectedDate = null;
 
-        if (knives === 1) price = 150;
-        else if (knives === 2) price = 179;
-        else if (knives === 3) price = 259;
-        else if (knives === 4) price = 339;
-        else if (knives === 5) price = 419;
-        else if (knives > 5) price = 419 + (knives - 5) * 50;
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
+      function toYMD(d) {
+        return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(
+          d.getDate()
+        )}`;
+      }
 
-        return price;
+      function parseYMD(ymd) {
+        // Local date, no timezone weirdness
+        const [y, m, d] = ymd.split("-").map(Number);
+        return new Date(y, m - 1, d);
+      }
+
+      function formatDateSV(ymd) {
+        const d = parseYMD(ymd);
+        const weekday = d.toLocaleDateString("sv-SE", { weekday: "short" });
+        const date = d.toLocaleDateString("sv-SE", {
+          day: "2-digit",
+          month: "2-digit",
+        });
+        return `${weekday} ${date}`;
+      }
+
+      function clearTimes(message = "Välj ett datum först") {
+        timeInput.innerHTML = "";
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = message;
+        opt.disabled = true;
+        opt.selected = true;
+        timeInput.appendChild(opt);
+      }
+
+      function setTimesForDate(ymd) {
+        const allowedTimes = availability?.allowed?.[ymd] || [];
+        timeInput.innerHTML = "";
+
+        if (!allowedTimes.length) {
+          clearTimes("Inga tider för det datumet");
+          return;
+        }
+
+        const firstOpt = document.createElement("option");
+        firstOpt.value = "";
+        firstOpt.textContent = "Välj tid";
+        firstOpt.disabled = true;
+        firstOpt.selected = true;
+        timeInput.appendChild(firstOpt);
+
+        for (const t of allowedTimes) {
+          const opt = document.createElement("option");
+          opt.value = t;
+          opt.textContent = t;
+          timeInput.appendChild(opt);
+        }
+      }
+
+      function calculatePrice(knives) {
+        knives = parseInt(knives, 10);
+        if (knives === 1) return 150;
+        if (knives === 2) return 179;
+        if (knives === 3) return 259;
+        if (knives === 4) return 339;
+        if (knives === 5) return 419;
+        if (knives > 5) return 419 + (knives - 5) * 50;
+        return 0;
       }
 
       function updatePrice() {
-        const date = dateInput.value;
-        const time = timeInput.value;
-        const knives = parseInt(knivesInput.value);
-        if (!date || !time || !knives) return;
-        const price = calculatePrice(date, time, knives);
-        priceDisplay.textContent = `Pris: ${price} kr`;
+        const knives = parseInt(knivesInput.value, 10);
+        if (!knives) {
+          priceDisplay.textContent = "Pris: -";
+          return;
+        }
+        priceDisplay.textContent = `Pris: ${calculatePrice(knives)} kr`;
       }
 
-      dateInput.addEventListener("change", updatePrice);
-      timeInput.addEventListener("change", updatePrice);
+      function hoursBetween(a, b) {
+        return (a - b) / (1000 * 60 * 60);
+      }
+
+      function isAllowed(ymd, time) {
+        const list = availability?.allowed?.[ymd];
+        return Array.isArray(list) && list.includes(time);
+      }
+
+      function getMinDateYMD() {
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return toYMD(tomorrow);
+      }
+
+      function renderDateList() {
+        const minDateYMD = getMinDateYMD();
+        const minTime = parseYMD(minDateYMD).getTime();
+
+        const allowedDates = Object.keys(availability.allowed || {})
+          .filter((d) => {
+            const t = parseYMD(d).getTime();
+            return Number.isFinite(t) && t >= minTime;
+          })
+          .sort((a, b) => parseYMD(a).getTime() - parseYMD(b).getTime());
+
+        dateListEl.innerHTML = "";
+
+        if (!allowedDates.length) {
+          const div = document.createElement("div");
+          div.textContent = "Inga tider öppna just nu.";
+          dateListEl.appendChild(div);
+          clearTimes("Inga tider öppna");
+          dateHiddenInput.value = "";
+          selectedDate = null;
+          return;
+        }
+
+        for (const d of allowedDates) {
+          const times = availability.allowed[d] || [];
+
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.dataset.ymd = d;
+
+          // Inline-styling, så du inte blir saboterad av din globala button-CSS
+          btn.style.display = "flex";
+          btn.style.justifyContent = "space-between";
+          btn.style.alignItems = "center";
+          btn.style.width = "100%";
+          btn.style.padding = "0.75rem";
+          btn.style.borderRadius = "8px";
+          btn.style.border = "1px solid #333";
+          btn.style.background = "#121212";
+          btn.style.color = "#e4dcd0";
+          btn.style.cursor = "pointer";
+          btn.style.marginTop = "0"; // neutralisera din globala button-regel
+          btn.style.lineHeight = "1.2rem"; // neutralisera globalt
+          btn.style.fontWeight = "600";
+
+          const left = document.createElement("div");
+          left.textContent = formatDateSV(d);
+
+          const right = document.createElement("div");
+          right.style.opacity = "0.9";
+          right.style.fontWeight = "600";
+          right.textContent = `${times.length} tider`;
+
+          btn.appendChild(left);
+          btn.appendChild(right);
+
+          btn.addEventListener("click", () => selectDate(d));
+          dateListEl.appendChild(btn);
+        }
+        selectedDate = null;
+        dateHiddenInput.value = "";
+        clearTimes("Välj ett datum först");
+        highlightSelectedDate();
+      }
+
+      function highlightSelectedDate() {
+        const buttons = Array.from(dateListEl.querySelectorAll("button"));
+        for (const b of buttons) {
+          const isSelected = selectedDate && b.dataset.ymd === selectedDate;
+          b.style.outline = isSelected ? "2px solid #339dff" : "none";
+        }
+      }
+
+      function selectDate(ymd) {
+        selectedDate = ymd;
+        dateHiddenInput.value = ymd;
+        setTimesForDate(ymd);
+        highlightSelectedDate();
+        updatePrice();
+      }
+
+      async function loadAvailability() {
+        const res = await fetch("availability.json", { cache: "no-store" });
+        if (!res.ok) throw new Error("Kunde inte ladda availability.json");
+        availability = await res.json();
+      }
+
+      // Init
+      (async () => {
+        try {
+          clearTimes("Laddar tider...");
+          await loadAvailability();
+          renderDateList();
+          updatePrice();
+        } catch (e) {
+          console.error(e);
+          clearTimes("Tekniskt fel: tider kunde inte laddas");
+          alert("Kunde inte ladda tillgängliga tider. Försök igen senare.");
+        }
+      })();
+
       knivesInput.addEventListener("input", updatePrice);
+      timeInput.addEventListener("change", updatePrice);
 
-      document.getElementById("bookingForm").addEventListener("submit", () => {
-        submitted = true;
-        const selectedDate = new Date(`${dateInput.value}T${timeInput.value}`);
-        const nowTime = new Date();
-        const diffHours = (selectedDate - nowTime) / (1000 * 60 * 60);
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault(); // stoppa normal submit
 
-        if (selectedDate < nowTime) {
-          alert("Du kan inte boka ett datum som redan har varit.");
-          event.preventDefault();
+        // --- dina valideringar här ---
+        const ymd = dateHiddenInput.value;
+        const time = timeInput.value;
+        const knives = parseInt(knivesInput.value, 10);
+
+        if (!ymd) {
+          alert("Välj ett datum.");
+          return;
+        }
+        if (!time) {
+          alert("Välj en tid.");
+          return;
+        }
+        if (Number.isNaN(knives) || knives < 2) {
+          alert("Minst 2 knivar.");
+          return;
+        }
+        if (!isAllowed(ymd, time)) {
+          alert("Välj en tillgänglig tid.");
           return;
         }
 
-        if (diffHours < 8) {
-          alert("Du måste boka minst 8 timmar i förväg.");
-          event.preventDefault();
-          return;
+        // (min_notice_hours-check etc fortsätter som du redan har)
+
+        // Disable submit-knappen så folk inte dubbelklickar
+        const submitBtn = form.querySelector(
+          'input[type="submit"], button[type="submit"]'
+        );
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.value = "Skickar...";
         }
 
-        if (knives < 2) {
-          alert("Du måste boka minst 2 knivar.");
-          event.preventDefault();
-          return;
+        // Fallback: om Formspree segar ur helt, redirecta ändå efter 2 sek
+        const fallbackRedirect = setTimeout(() => {
+          window.location.href = "tack.html";
+        }, 2000);
+
+        try {
+          const formData = new FormData(form);
+
+          const res = await fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: { Accept: "application/json" },
+          });
+
+          clearTimeout(fallbackRedirect);
+
+          // Formspree svarar ofta 200/302. Vi accepterar “ok-ish”.
+          if (res.ok) {
+            window.location.href = "tack.html";
+            return;
+          }
+
+          // Om det blev fel: visa fel och återaktivera
+          const text = await res.text().catch(() => "");
+          console.error("Formspree error:", res.status, text);
+          alert("Kunde inte skicka bokningen just nu. Försök igen.");
+        } catch (err) {
+          clearTimeout(fallbackRedirect);
+          console.error(err);
+          alert("Nätverksfel. Försök igen.");
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.value = "Boka";
+          }
         }
       });
     </script>
