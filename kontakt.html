@@ -65,11 +65,17 @@
         line-height: 1.2rem;
       }
 
+      input[type="submit"][disabled] {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
       input[type="submit"]:hover {
         background-color: #228be6;
       }
     </style>
   </head>
+
   <body class="is-preload">
     <div id="topbar">
       <div class="logo">
@@ -80,12 +86,10 @@
       <nav id="nav">
         <ul>
           <li>
-            <a href="bokning.html" class="boka-btn-topbar"
-              ><i class=""></i> Boka slipning</a
-            >
+            <a href="bokning.html" class="boka-btn-topbar">Boka slipning</a>
           </li>
           <li><a href="index.html#priser">Priser</a></li>
-          <li><a href="index.htmlkontakt.html">Kontakt</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
           <li><a href="index.html#om-oss">Om oss</a></li>
         </ul>
       </nav>
@@ -93,43 +97,72 @@
 
     <main>
       <h2>Kontakta oss</h2>
+
+      <!--
+        IMPORTANT:
+        - Postar till n8n webhook (hooks-subdomain).
+        - n8n ska svara 302 Location -> tack-kontakt.html (eller tack.html om du vill återanvända).
+      -->
       <form
         id="contactForm"
-        action="https://formspree.io/f/xdkzbnrz"
+        action="https://hooks.knivkalle.se/webhook/kontakt"
         method="POST"
-        target="hidden_iframe"
       >
         <label for="name">Namn:</label>
-        <input type="text" id="name" name="name" required />
+        <input type="text" id="name" name="name" autocomplete="name" required />
 
         <label for="email">E-post:</label>
-        <input type="email" id="email" name="_replyto" required />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          autocomplete="email"
+          required
+        />
 
         <label for="message">Meddelande:</label>
         <textarea id="message" name="message" rows="5" required></textarea>
 
-        <input type="submit" value="Skicka" />
+        <!-- Honeypot -->
+        <input
+          type="text"
+          name="company"
+          style="display: none"
+          tabindex="-1"
+          autocomplete="off"
+        />
+
+        <input id="submitBtn" type="submit" value="Skicka" />
       </form>
     </main>
 
-    <iframe
-      name="hidden_iframe"
-      style="display: none"
-      onload="if(submitted) alert('Tack för ditt meddelande! Vi hör av oss snart.');"
-    ></iframe>
-
     <script>
-      let submitted = false;
-      document
-        .getElementById("contactForm")
-        .addEventListener("submit", function () {
-          submitted = true;
-        });
-
+      // Mobile nav
       const toggle = document.getElementById("menu-toggle");
       const nav = document.getElementById("nav");
       toggle.addEventListener("click", () => {
         nav.classList.toggle("open");
+      });
+
+      // Prevent double submit
+      const form = document.getElementById("contactForm");
+      const submitBtn = document.getElementById("submitBtn");
+
+      form.addEventListener("submit", (event) => {
+        // Enkel sanity check, HTML required gör redan jobbet
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const message = document.getElementById("message").value.trim();
+
+        if (!name || !email || !message) {
+          event.preventDefault();
+          alert("Fyll i namn, e-post och meddelande.");
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.value = "Skickar...";
+        // Ingen fetch, ingen iframe: browsern postar normalt och n8n redirectar.
       });
     </script>
   </body>
