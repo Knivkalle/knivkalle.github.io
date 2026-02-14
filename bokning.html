@@ -277,12 +277,12 @@
 
       function calculatePrice(knives) {
         knives = parseInt(knives, 10);
-        if (knives === 1) return 150;
-        if (knives === 2) return 179;
-        if (knives === 3) return 259;
-        if (knives === 4) return 339;
-        if (knives === 5) return 419;
-        if (knives > 5) return 419 + (knives - 5) * 50;
+        if (knives === 1) return 0;
+        if (knives === 2) return 249;
+        if (knives === 3) return 359;
+        if (knives === 4) return 459;
+        if (knives === 5) return 499;
+        if (knives > 5) return 499 + (knives - 5) * 89;
         return 0;
       }
 
